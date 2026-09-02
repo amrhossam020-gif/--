@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>اختبر نفسك</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- الرئيسية -->
+    <!-- ========================= -->
+
+    <div id="homePage" class="page active">
+
+        <div class="container">
+
+            <h1>🧠 اختبر نفسك</h1>
+
+            <p class="subtitle">
+                بنك أسئلة واختباراتك في مكان واحد
+            </p>
+
+            <div class="menu">
+
+                <button onclick="showPage('importPage')">
+                    📊 استيراد Excel
+                </button>
+
+                <button onclick="showPage('filesPage'); loadFiles()">
+                    📁 الملفات والتصنيفات
+                </button>
+
+                <button onclick="showPage('questionsPage'); loadQuestions()">
+                    📚 بنك الأسئلة
+                </button>
+
+                <button onclick="showPage('quizSetupPage'); loadQuizFilters()">
+                    🎯 ابدأ الاختبار
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- استيراد Excel -->
+    <!-- ========================= -->
+
+    <div id="importPage" class="page">
+
+        <div class="container">
+
+            <h2>📊 استيراد أسئلة Excel</h2>
+
+            <p>
+                اختار ملف أو أكثر من ملفات Excel
+            </p>
+
+            <input
+                type="file"
+                id="excelFiles"
+                accept=".xlsx,.xls,.csv"
+                multiple
+            >
+
+            <div id="selectedFiles"></div>
+
+            <button onclick="importExcel()">
+                📥 استيراد الأسئلة
+            </button>
+
+            <div id="importResult"></div>
+
+            <button
+                class="secondary"
+                onclick="showPage('homePage')"
+            >
+                🏠 الرئيسية
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- الملفات والتصنيفات -->
+    <!-- ========================= -->
+
+    <div id="filesPage" class="page">
+
+        <div class="container">
+
+            <h2>📁 الملفات والتصنيفات</h2>
+
+            <div id="filesList">
+
+                <p>
+                    جاري تحميل الملفات...
+                </p>
+
+            </div>
+
+            <button
+                class="secondary"
+                onclick="showPage('homePage')"
+            >
+                🏠 الرئيسية
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- بنك الأسئلة -->
+    <!-- ========================= -->
+
+    <div id="questionsPage" class="page">
+
+        <div class="container">
+
+            <h2>📚 بنك الأسئلة</h2>
+
+            <select
+                id="questionCategoryFilter"
+                onchange="filterQuestionFiles()"
+            >
+
+                <option value="">
+                    كل التصنيفات
+                </option>
+
+            </select>
+
+            <select
+                id="questionFileFilter"
+                onchange="loadQuestions()"
+            >
+
+                <option value="">
+                    كل الملفات
+                </option>
+
+            </select>
+
+            <div class="bankInfo">
+
+                عدد الأسئلة:
+                <b id="questionsCount">
+                    0
+                </b>
+
+            </div>
+
+            <div id="questionsList"></div>
+
+            <button
+                class="secondary"
+                onclick="showPage('homePage')"
+            >
+                🏠 الرئيسية
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- إعداد الاختبار -->
+    <!-- ========================= -->
+
+    <div id="quizSetupPage" class="page">
+
+        <div class="container">
+
+            <h2>🎯 إعداد الاختبار</h2>
+
+            <label>
+                التصنيف
+            </label>
+
+            <select
+                id="quizCategory"
+                onchange="filterQuizFiles()"
+            >
+
+                <option value="">
+                    كل التصنيفات
+                </option>
+
+            </select>
+
+            <label>
+                الملف
+            </label>
+
+            <select id="quizFile">
+
+                <option value="">
+                    كل الملفات
+                </option>
+
+            </select>
+
+            <label>
+                عدد الأسئلة
+            </label>
+
+            <input
+                type="number"
+                id="quizCount"
+                min="1"
+                value="20"
+            >
+
+            <button onclick="startQuiz()">
+                🚀 ابدأ الاختبار
+            </button>
+
+            <button
+                class="secondary"
+                onclick="showPage('homePage')"
+            >
+                🏠 الرئيسية
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- صفحة الاختبار -->
+    <!-- ========================= -->
+
+    <div id="quizPage" class="page">
+
+        <div class="container">
+
+            <div class="quizHeader">
+
+                <span>
+                    السؤال:
+                    <b id="questionNumber">1</b>
+                    من
+                    <b id="totalQuestions">0</b>
+                </span>
+
+                <span>
+                    الدرجة:
+                    <b id="score">0</b>
+                </span>
+
+            </div>
+
+
+            <div class="quizLayout">
+
+                <div class="quizMain">
+
+                    <h2 id="questionText">
+                        السؤال
+                    </h2>
+
+                    <div id="answers"></div>
+
+                    <button
+                        id="nextQuestion"
+                        onclick="nextQuestion()"
+                    >
+                        السؤال التالي
+                    </button>
+
+                </div>
+
+
+                <!-- أرقام الأسئلة -->
+
+                <div class="questionNumbers">
+
+                    <h3>
+                        📋 الأسئلة
+                    </h3>
+
+                    <div id="questionNumbersList"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- النتيجة -->
+    <!-- ========================= -->
+
+    <div id="resultPage" class="page">
+
+        <div class="container">
+
+            <h1>
+                🎉 انتهى الاختبار
+            </h1>
+
+            <h2 id="finalScore">
+                0 / 0
+            </h2>
+
+            <p id="resultMessage"></p>
+
+            <!-- الأسئلة التي تمت الإجابة عليها بشكل خاطئ -->
+
+            <div id="wrongAnswers"></div>
+
+            <button
+                onclick="showPage('quizSetupPage'); loadQuizFilters()"
+            >
+                🔄 اختبار جديد
+            </button>
+
+            <button
+                class="secondary"
+                onclick="showPage('homePage')"
+            >
+                🏠 الرئيسية
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- مكتبة قراءة Excel -->
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+    <!-- كود الموقع -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
